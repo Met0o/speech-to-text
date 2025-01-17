@@ -2,5 +2,5 @@
 models/
 ffmpeg/
 __pycache__/
-venv/
+.tts/
 .vscode/
