@@ -1,4 +1,6 @@
 # Project specific
+build/
+dist/
 models/
 ffmpeg/
 __pycache__/
