@@ -3,6 +3,7 @@ build/
 dist/
 models/
 ffmpeg/
+whisper.cpp/
 __pycache__/
 .tts/
 .vscode/

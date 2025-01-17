@@ -9,7 +9,7 @@ from ttkbootstrap.constants import *
 from tkinter import filedialog, messagebox, END
 import tkinter.font as tkFont
 
-# pyinstaller --onedir --noconsole --add-data "ffmpeg;ffmpeg" --add-data "models;models" app.py
+# pyinstaller --noarchive app.spec
 
 if getattr(sys, 'frozen', False):
     project_dir = sys._MEIPASS
