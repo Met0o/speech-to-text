@@ -3,3 +3,4 @@ torch
 torchaudio
 imageio[ffmpeg]
 pyinstaller
+ttkbootstrap
