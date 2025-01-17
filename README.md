@@ -4,7 +4,7 @@ A tool for converting audio files to text using Whisper AI model.
 
 ## Project Structure
 
-```
+```bash
 ├── app.exe
 ├── ffmpeg/
 │   └── bin/
@@ -16,3 +16,4 @@ A tool for converting audio files to text using Whisper AI model.
         ├── gpt2.tiktoken
         ├── mel_filters.npz
         └── multilingual.tiktoken
+```

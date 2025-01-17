@@ -21,8 +21,8 @@ os.environ["PATH"] += os.pathsep + ffmpeg_path
 
 models_dir = os.path.join(project_dir, "models")
 available_models = {
-    "Whisper Large (Slow, precise)": "large-v3.pt",
-    "Whisper Turbo (Fast, less precise)": "large-v3-turbo.pt"
+    "Whisper-Large-v3 (slow & precise)": "large-v3.pt",
+    "Whisper-Turbo-v3 (fast & less precise)": "large-v3-turbo.pt"
 }
 
 def transcribe_file():
@@ -83,7 +83,18 @@ def open_github_model_link(event):
 def open_github_dev_link(event):
     webbrowser.open("https://github.com/Met0o")
 
-root = ttk.Window(themename="darkly")
+root = ttk.Window(themename="superhero")
+
+# darkly
+# cyborg
+# flatly
+# journal
+# litera
+# pulse
+# sandstone
+# solar
+# superhero
+
 root.title("Bulgarian Speech-to-Text Transcription Application")
 root.geometry("1024x768")
 root.style.configure("TFrame", background="#092642")
