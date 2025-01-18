@@ -1,3 +1,12 @@
+import os
+import sys
+import requests
+import threading
+import webbrowser
+import subprocess
+import tkinter as tk
+from tkinter import filedialog, messagebox
+
 # Install VS 2022 with C++ build tools, CMake, and CUDA Toolkit 12.6
 # git clone https://github.com/ggerganov/whisper.cpp.git
 # mkdir build
@@ -6,11 +15,51 @@
 # cmake --build build -j --config Release
 # C:\dev\whisper.cpp\build\bin\Release>whisper-server.exe --host 127.0.0.1 --port 8080 -m "models/ggml-large-v3-turbo.bin" --convert -t 24 --ov-e-device CUDA -l bg
 
-import requests
-import threading
-import webbrowser
-import tkinter as tk
-from tkinter import filedialog, messagebox
+
+# pyinstaller app_cpp.py ^
+#   --onedir ^
+#   --noconsole ^
+#   --add-binary "E:/Dev/Projects/speech-to-text/Release/whisper-server.exe;Release/" ^
+#   --add-binary "E:/Dev/Projects/speech-to-text/Release/whisper-bench.exe;Release/" ^
+#   --add-binary "E:/Dev/Projects/speech-to-text/Release/whisper-cli.exe;Release/" ^
+#   --add-binary "E:/Dev/Projects/speech-to-text/Release/ggml-base.dll;Release/" ^
+#   --add-binary "E:/Dev/Projects/speech-to-text/Release/ggml-cuda.dll;Release/" ^
+#   --add-binary "E:/Dev/Projects/speech-to-text/Release/ggml-cpu.dll;Release/" ^
+#   --add-binary "E:/Dev/Projects/speech-to-text/Release/whisper.dll;Release/" ^
+#   --add-binary "E:/Dev/Projects/speech-to-text/Release/ggml.dll;Release/" ^
+#   --add-data   "E:/Dev/Projects/speech-to-text/Release/models/ggml-large-v3.bin;Release/models/"
+
+
+def start_whisper_server():
+    if getattr(sys, 'frozen', False):
+        base_path = os.path.dirname(sys.executable)
+    else:
+        base_path = os.path.dirname(os.path.abspath(__file__))
+
+    internal_path = os.path.join(base_path, "_internal")
+    if os.path.exists(internal_path):
+        base_path = internal_path
+
+    server_exe = os.path.join(base_path, "Release", "whisper-server.exe")
+    model_path = os.path.join(base_path, "Release", "models", "ggml-large-v3.bin")
+
+    print("Starting server from:", server_exe)  # Debug output
+
+    cmd = [
+        server_exe,
+        "--host", "127.0.0.1",
+        "--port", "8080",
+        "-m", model_path,
+        "--convert",
+        "-t", "24",
+        "--ov-e-device", "CUDA",
+        "-l", "bg"
+    ]
+
+    # Use CREATE_NO_WINDOW to hide the cmd window
+    creation_flags = subprocess.CREATE_NO_WINDOW
+
+    return subprocess.Popen(cmd, creationflags=creation_flags)
 
 def transcribe_audio(audio_path, model_path="ggml-large-v3.bin", host="127.0.0.1", port=8080):
     """
@@ -140,66 +189,12 @@ github_dev_link = tk.Label(link_frame,
 github_dev_link.pack(side=tk.LEFT, padx=5)
 github_dev_link.bind("<Button-1>", open_github_dev_link)
 
-app.mainloop()
 
-
-# import requests
-# import tkinter as tk
-# from tkinter import filedialog, messagebox
-
-# def transcribe_audio(audio_path, model_path="ggml-large-v3.bin", host="127.0.0.1", port=8080):
-#     """
-#     Send an audio file to the whisper server for transcription.
-#     """
-#     url = f"http://{host}:{port}/inference"
-#     with open(audio_path, 'rb') as audio_file:
-#         files = {
-#             "file": audio_file,
-#             "model": (None, model_path),
-#             "language": (None, "bg")
-#         }
-#         response = requests.post(url, files=files)
-#     if response.status_code == 200:
-#         return response.json()
-#     else:
-#         raise RuntimeError(f"Server error: {response.status_code}, {response.text}")
-
-# def select_audio_file():
-#     """
-#     Prompt the user to select an audio file.
-#     """
-#     file_path = filedialog.askopenfilename(filetypes=[("Audio Files", "*.wav *.mp3")])
-#     if file_path:
-#         audio_entry.delete(0, tk.END)
-#         audio_entry.insert(0, file_path)
-
-# def start_transcription():
-#     """
-#     Start transcription process and display results.
-#     """
-#     audio_path = audio_entry.get()
-#     if not audio_path:
-#         messagebox.showerror("Error", "Please select an audio file.")
-#         return
-
-#     try:
-#         result = transcribe_audio(audio_path)
-#         transcription_text.delete(1.0, tk.END)
-#         transcription_text.insert(tk.END, result.get("text", "No transcription available."))
-#     except Exception as e:
-#         messagebox.showerror("Error", str(e))
-
-# app = tk.Tk()
-# app.title("Whisper Transcription to Bulgarian")
-
-# tk.Label(app, text="Audio File:").grid(row=0, column=0, padx=10, pady=10, sticky="e")
-# audio_entry = tk.Entry(app, width=50)
-# audio_entry.grid(row=0, column=1, padx=10, pady=10)
-# tk.Button(app, text="Browse", command=select_audio_file).grid(row=0, column=2, padx=10, pady=10)
-
-# tk.Button(app, text="Transcribe", command=start_transcription, bg="lightblue").grid(row=1, column=1, pady=10)
-
-# transcription_text = tk.Text(app, width=60, height=15, wrap="word")
-# transcription_text.grid(row=2, column=0, columnspan=3, padx=10, pady=10)
-
-# app.mainloop()
+if __name__ == "__main__":
+    # Start the server automatically before starting the GUI.
+    server_process = start_whisper_server()
+    try:
+        app.mainloop()
+    finally:
+        # Clean up the server process when the app is closed
+        server_process.terminate()
