@@ -5,7 +5,6 @@ import threading
 import webbrowser
 import subprocess
 import tkinter as tk
-import ttkbootstrap as ttk 
 from tkinter import filedialog, messagebox
 
 # Install VS 2022 with C++ build tools, CMake, and CUDA Toolkit 12.6
@@ -167,16 +166,13 @@ tk.Label(app, text="Input Audio File:", fg=dark_fg, bg=dark_bg)\
 audio_entry = tk.Entry(app, width=50, bg=entry_bg, fg=dark_fg, insertbackground=dark_fg)
 audio_entry.grid(row=0, column=1, padx=10, pady=10, sticky="we")
 
-tk.Button(app, text="Browse", bg=button_bg, fg=dark_fg, activebackground=button_hover_bg,
-          command=select_audio_file)\
+tk.Button(app, text="Browse", bg=button_bg, fg=dark_fg, activebackground=button_hover_bg, command=select_audio_file)\
     .grid(row=0, column=2, padx=10, pady=10)
 
-tk.Button(app, text="Transcribe", bg=button_bg, fg=dark_fg, activebackground=button_hover_bg,
-          command=start_transcription)\
+tk.Button(app, text="Transcribe", bg=button_bg, fg=dark_fg, activebackground=button_hover_bg, command=start_transcription)\
     .grid(row=0, column=3, padx=10, pady=10)
 
-tk.Button(app, text="Save Output", bg=button_bg, fg=dark_fg, activebackground=button_hover_bg,
-          command=save_output)\
+tk.Button(app, text="Save Output", bg=button_bg, fg=dark_fg, activebackground=button_hover_bg, command=save_output)\
     .grid(row=0, column=4, padx=10, pady=10)
 
 # Row 2: Transcription Output Text Widget
@@ -187,21 +183,15 @@ transcription_text.grid(row=2, column=0, columnspan=5, padx=10, pady=10, sticky=
 link_frame = tk.Frame(app, bg=dark_bg)
 link_frame.grid(row=3, column=0, columnspan=5, pady=5)
 
-github_model_link = tk.Label(link_frame,
-                             text="Based on OpenAI's Whisper Transformer architecture",
-                             fg="#ffffff", bg=button_bg, cursor="hand2")
+github_model_link = tk.Label(link_frame, text="Based on OpenAI's Whisper Transformer architecture", fg="#ffffff", bg=button_bg, cursor="hand2")
 github_model_link.pack(side=tk.LEFT, padx=5)
 github_model_link.bind("<Button-1>", open_github_model_link)
 
-github_dev_link = tk.Label(link_frame,
-                           text="Powered by Georgi Gerganov's ggml C++ backend",
-                           fg="#ffffff", bg=button_bg, cursor="hand2")
+github_dev_link = tk.Label(link_frame, text="Powered by Georgi Gerganov's ggml C++ backend", fg="#ffffff", bg=button_bg, cursor="hand2")
 github_dev_link.pack(side=tk.LEFT, padx=5)
 github_dev_link.bind("<Button-1>", open_github_model_gerganov_link)
 
-github_dev_link = tk.Label(link_frame,
-                           text="Developed by Metodi Simeonov",
-                           fg="#ffffff", bg=button_bg, cursor="hand2")
+github_dev_link = tk.Label(link_frame, text="Developed by Metodi Simeonov", fg="#ffffff", bg=button_bg, cursor="hand2")
 github_dev_link.pack(side=tk.LEFT, padx=5)
 github_dev_link.bind("<Button-1>", open_github_dev_link)
 
