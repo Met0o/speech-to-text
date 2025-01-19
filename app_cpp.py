@@ -23,6 +23,9 @@ def start_whisper_server(device="cpu"):
     if os.path.exists(internal_path):
         base_path = internal_path
 
+    ffmpeg_path = os.path.join(internal_path, "ffmpeg", "bin")
+    os.environ["PATH"] += os.pathsep + ffmpeg_path
+
     if device == "gpu":
         exe_name = "whisper-server-gpu.exe"
         build_folder = "build_gpu"

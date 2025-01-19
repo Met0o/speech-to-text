@@ -5,7 +5,7 @@ a = Analysis(
     ['app_cpp.py'],
     pathex=[],
     binaries=[('E:/Dev/Projects/speech-to-text/Release/build_cpu/ggml.dll', 'Release/build_cpu/'), ('E:/Dev/Projects/speech-to-text/Release/build_cpu/whisper.dll', 'Release/build_cpu/'), ('E:/Dev/Projects/speech-to-text/Release/build_cpu/ggml-cpu.dll', 'Release/build_cpu/'), ('E:/Dev/Projects/speech-to-text/Release/build_cpu/ggml-base.dll', 'Release/build_cpu/'), ('E:/Dev/Projects/speech-to-text/Release/build_cpu/whisper-server-cpu.exe', 'Release/build_cpu/'), ('E:/Dev/Projects/speech-to-text/Release/build_cpu/models/ggml-large-v3-turbo-q8_0.bin', 'Release/build_cpu/models/'), ('E:/Dev/Projects/speech-to-text/Release/build_gpu/models/ggml-large-v3-turbo-q8_0.bin', 'Release/build_gpu/models/'), ('E:/Dev/Projects/speech-to-text/Release/build_gpu/whisper-server-gpu.exe', 'Release/build_gpu/'), ('E:/Dev/Projects/speech-to-text/Release/build_gpu/ggml-cuda.dll', 'Release/build_gpu/'), ('E:/Dev/Projects/speech-to-text/Release/build_gpu/ggml-base.dll', 'Release/build_gpu/'), ('E:/Dev/Projects/speech-to-text/Release/build_gpu/ggml-cpu.dll', 'Release/build_gpu/'), ('E:/Dev/Projects/speech-to-text/Release/build_gpu/whisper.dll', 'Release/build_gpu/'), ('E:/Dev/Projects/speech-to-text/Release/build_gpu/ggml.dll', 'Release/build_gpu/')],
-    datas=[],
+    datas=[('E:/Dev/Projects/speech-to-text/ffmpeg', 'ffmpeg')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
