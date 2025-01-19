@@ -42,12 +42,15 @@ A tool for converting audio files to text using the Whisper AI model.
 
 ```bash
 speech-to-text/
-    ├── main.exe
-    ├── app_cpp.py
-    ├── ffmpeg/
-    ├── Release/
-    │     ├── models/     
-    │     │     └── ggml-large-v3.bin
-    │     └── whisper-server.exe
-    ├── start_server.bat   
+  ├── app_cpp.py
+  ├── Release/
+  │   ├── build_cpu/
+  │   │   ├── models/
+  │   │   │   └── ggml-large-v3.bin
+  │   │   └── whisper-server-cpu.exe
+  │   ├── build_gpu/
+  │   │   ├── models/
+  │   │   │   └── ggml-large-v3.bin
+  │   │   └── whisper-server-gpu.exe
+ 
 ```
