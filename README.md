@@ -62,7 +62,7 @@ A tool for converting audio files to text using OpenAI's Whisper model architect
     ```bash
     pip install pyinstaller
     ```
-2. Create the executable:
+2. Create CPU & GPU executable:
     ```bash
     pyinstaller app_cpp_cpu_gpu.py ^
         --onedir ^
@@ -106,14 +106,22 @@ speech-to-text/
   ├── app_cpp_cpu.py
   ├── app_cpp_cpu_gpu.py
   ├── ffmpeg/
+  │   ├── bin/
   ├── Release/
   │   ├── build_cpu/
   │   │   ├── models/
   │   │   │   └── ggml-large-v3-turbo-q8_0.bin
   │   │   └── whisper-server-cpu.exe
+  │   │   └── ggml-gpu.dll
+  │   │   └── whisper.dll
+  │   │   └── ggml.dll
+  │   │   └── ... 
   │   ├── build_gpu/
   │   │   ├── models/
   │   │   │   └── ggml-large-v3-turbo-q8_0.bin
   │   │   └── whisper-server-gpu.exe
- 
+  │   │   └── ggml-cpu.dll
+  │   │   └── whisper.dll
+  │   │   └── ggml.dll
+  │   │   └── ...
 ```

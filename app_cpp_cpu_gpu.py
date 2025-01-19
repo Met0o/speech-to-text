@@ -161,7 +161,7 @@ def open_github_model_link(event):
     webbrowser.open("https://github.com/openai/whisper")
 
 def open_github_dev_link(event):
-    webbrowser.open("https://github.com/Met0o")
+    webbrowser.open("https://github.com/Met0o/speech-to-text")
 
 def open_github_model_gerganov_link(event):
     webbrowser.open("https://github.com/ggerganov/whisper.cpp")
