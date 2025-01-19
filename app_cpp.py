@@ -31,6 +31,7 @@ from tkinter import filedialog, messagebox
 
 
 def start_whisper_server():
+    
     if getattr(sys, 'frozen', False):
         base_path = os.path.dirname(sys.executable)
     else:
@@ -40,10 +41,15 @@ def start_whisper_server():
     if os.path.exists(internal_path):
         base_path = internal_path
 
+    # if getattr(sys, 'frozen', False):
+    #     # In onefile/frozen mode, the files are in sys._MEIPASS and placed under `Release/` within that temp folder
+    #     base_path = os.path.join(sys._MEIPASS, "Release")
+    # else:
+    #     # In onedir mode, they can be referencenced from the local folder:
+    #     base_path = os.path.join(os.path.dirname(__file__), "Release")
+
     server_exe = os.path.join(base_path, "Release", "whisper-server.exe")
     model_path = os.path.join(base_path, "Release", "models", "ggml-large-v3.bin")
-
-    print("Starting server from:", server_exe)  # Debug output
 
     cmd = [
         server_exe,
@@ -56,7 +62,7 @@ def start_whisper_server():
         "-l", "bg"
     ]
 
-    # Use CREATE_NO_WINDOW to hide the cmd window
+    # Using CREATE_NO_WINDOW to hide the cmd popup when running the server
     creation_flags = subprocess.CREATE_NO_WINDOW
 
     return subprocess.Popen(cmd, creationflags=creation_flags)
@@ -191,10 +197,8 @@ github_dev_link.bind("<Button-1>", open_github_dev_link)
 
 
 if __name__ == "__main__":
-    # Start the server automatically before starting the GUI.
     server_process = start_whisper_server()
     try:
         app.mainloop()
     finally:
-        # Clean up the server process when the app is closed
         server_process.terminate()
