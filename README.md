@@ -24,13 +24,13 @@ A tool for converting audio files to text using the Whisper AI model.
 
 4. Configure two projects with CMake (one for CPU and one for GPU inference):
     - CPU Inference:
-        ```bash
-        cmake -B build_cpu -DGGML_CUDA=0 ..
-        ```
+    ```bash
+    cmake -B build_cpu -DGGML_CUDA=0 ..
+    ```
     - GPU Inference:
-        ```bash
-        cmake -B build_gpu -DGGML_CUDA=1 -DCUDAToolkit_ROOT="C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.6" -DCudaToolkitDir="C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.6" ..
-        ```
+    ```bash
+    cmake -B build_gpu -DGGML_CUDA=1 -DCUDAToolkit_ROOT="C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.6" -DCudaToolkitDir="C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.6" ..
+    ```
 
 5. Build the project:
     ```bash
@@ -42,19 +42,19 @@ A tool for converting audio files to text using the Whisper AI model.
 
 7. Run the server to test both CPU and GPU inference:
     - CPU Inference (rename the `whisper-server.exe` to `whisper-server-cpu.exe`):
-        ```bash
-        C:\dev\whisper.cpp\build\bin\Release\whisper-server-cpu.exe --host 127.0.0.1 --port 8080 -m "models/ggml-large-v3-turbo-q8_0.bin" --convert -t 24 -l bg
-        ```
+    ```bash
+    C:\dev\whisper.cpp\build\bin\Release\whisper-server-cpu.exe --host 127.0.0.1 --port 8080 -m "models/ggml-large-v3-turbo-q8_0.bin" --convert -t 24 -l bg
+    ```
     - GPU Inference (rename the file `whisper-server.exe` to `whisper-server-gpu.exe`):
-        ```bash
-        C:\dev\whisper.cpp\build\bin\Release\whisper-server-gpu.exe --host 127.0.0.1 --port 8080 -m "models/ggml-large-v3-turbo-q8_0.bin" --convert -t 24 --ov-e-device CUDA -l bg
-        ```
+    ```bash
+    C:\dev\whisper.cpp\build\bin\Release\whisper-server-gpu.exe --host 127.0.0.1 --port 8080 -m "models/ggml-large-v3-turbo-q8_0.bin" --convert -t 24 --ov-e-device CUDA -l bg
+    ```
     - Sample request:
-        ```python
-        import requests 
-        response = requests.post('http://localhost:8080', files={'file': open('path/to/audio/file.wav', 'rb')})
-        print(response.text)
-        ```
+    ```python
+    import requests 
+    response = requests.post('http://localhost:8080', files={'file': open('path/to/audio/file.wav', 'rb')})
+    print(response.text)
+    ```
 
 ## Creating Executable
 
