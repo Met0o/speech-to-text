@@ -25,7 +25,9 @@ from tkinter import filedialog, messagebox
 
 
 def start_whisper_server():
-    
+    """
+    Start the Whisper server in a separate process and return the process object.
+    """
     if getattr(sys, 'frozen', False):
         base_path = os.path.dirname(sys.executable)
     else:
@@ -156,6 +158,7 @@ dark_fg = "#ffffff"
 entry_bg = "#3e3e3e"
 button_bg = "#555555"
 button_hover_bg = "#777777"
+transcription_text_fg = "#000000"
 
 # Row 0: File input, Browse, Save Output, and Transcribe controls
 tk.Label(app, text="Input Audio File:", fg=dark_fg, bg=dark_bg)\
@@ -177,7 +180,7 @@ tk.Button(app, text="Save Output", bg=button_bg, fg=dark_fg, activebackground=bu
     .grid(row=0, column=4, padx=10, pady=10)
 
 # Row 2: Transcription Output Text Widget
-transcription_text = tk.Text(app, wrap="word", bg=entry_bg, fg=dark_fg, insertbackground=dark_fg)
+transcription_text = tk.Text(app, wrap="word", bg=dark_fg, fg=transcription_text_fg, insertbackground=transcription_text_fg)
 transcription_text.grid(row=2, column=0, columnspan=5, padx=10, pady=10, sticky="nsew")
 
 # Row 3: Links frame
