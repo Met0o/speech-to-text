@@ -5,9 +5,9 @@ A tool for converting audio files to text using the Whisper AI model.
 ## Installation
 
 1. Install:
-    - [Visual Studio 2022](https://visualstudio.microsoft.com/downloads/) with C++ build tools.
-    - [CMake 3.21.3](https://cmake.org/download/).
-    - [NVIDIA CUDA Toolkit 12.6](https://developer.nvidia.com/cuda-12-6-2-download-archive) for your OS.
+    - [Visual Studio 2022](https://visualstudio.microsoft.com/downloads/) with C++ build tools
+    - [CMake 3.21.3](https://cmake.org/download/)
+    - [NVIDIA CUDA Toolkit 12.6](https://developer.nvidia.com/cuda-12-6-2-download-archive) for your OS
 
 2. Clone the repository:
     ```bash
@@ -17,18 +17,20 @@ A tool for converting audio files to text using the Whisper AI model.
 3. Create and navigate to the build directory:
     ```bash
     mkdir build
+    ```
+    ```bash
     cd build
     ```
 
 4. Configure two projects with CMake (one for CPU and one for GPU inference):
-    A. CPU Inference:
-    ```bash
-    cmake -B build_cpu -DGGML_CUDA=0 ..
-    ```
-    B. GPU Inference:
-    ```bash
-    cmake -B build_gpu -DGGML_CUDA=1 -DCUDAToolkit_ROOT="C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.6" -DCudaToolkitDir="C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.6" ..
-    ```
+    - CPU Inference:
+        ```bash
+        cmake -B build_cpu -DGGML_CUDA=0 ..
+        ```
+    - GPU Inference:
+        ```bash
+        cmake -B build_gpu -DGGML_CUDA=1 -DCUDAToolkit_ROOT="C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.6" -DCudaToolkitDir="C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.6" ..
+        ```
 
 5. Build the project:
     ```bash
@@ -39,19 +41,20 @@ A tool for converting audio files to text using the Whisper AI model.
 6. Donwload a `Whisper` model of choice from [Huggingface](https://huggingface.co/ggerganov/whisper.cpp/tree/main). The model should be placed in the `models` directory.
 
 7. Run the server to test both CPU and GPU inference:
-    A. CPU Inference (rename the `whisper-server.exe` to `whisper-server-cpu.exe`):
-    ```bash
-    C:\dev\whisper.cpp\build\bin\Release\whisper-server-cpu.exe --host 127.0.0.1 --port 8080 -m "models/ggml-large-v3-turbo-q8_0.bin" --convert -t 24 -l bg
-    ```
-    B. GPU Inference (rename the file `whisper-server.exe` to `whisper-server-gpu.exe`):
-    ```bash
-    C:\dev\whisper.cpp\build\bin\Release\whisper-server-gpu.exe --host 127.0.0.1 --port 8080 -m "models/ggml-large-v3-turbo-q8_0.bin" --convert -t 24 --ov-e-device CUDA -l bg
-    ```
-    ```python
-    import requests 
-    response = requests.post('http://localhost:8080', files={'file': open('path/to/audio/file.wav', 'rb')})
-    print(response.text)
-    ```
+    - CPU Inference (rename the `whisper-server.exe` to `whisper-server-cpu.exe`):
+        ```bash
+        C:\dev\whisper.cpp\build\bin\Release\whisper-server-cpu.exe --host 127.0.0.1 --port 8080 -m "models/ggml-large-v3-turbo-q8_0.bin" --convert -t 24 -l bg
+        ```
+    - GPU Inference (rename the file `whisper-server.exe` to `whisper-server-gpu.exe`):
+        ```bash
+        C:\dev\whisper.cpp\build\bin\Release\whisper-server-gpu.exe --host 127.0.0.1 --port 8080 -m "models/ggml-large-v3-turbo-q8_0.bin" --convert -t 24 --ov-e-device CUDA -l bg
+        ```
+    - Sample request:
+        ```python
+        import requests 
+        response = requests.post('http://localhost:8080', files={'file': open('path/to/audio/file.wav', 'rb')})
+        print(response.text)
+        ```
 
 ## Creating Executable
 
