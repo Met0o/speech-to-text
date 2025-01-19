@@ -4,7 +4,7 @@
 a = Analysis(
     ['app_cpp.py'],
     pathex=[],
-    binaries=[('E:/Dev/Projects/speech-to-text/Release/whisper-server.exe', 'Release/'), ('E:/Dev/Projects/speech-to-text/Release/whisper-bench.exe', 'Release/'), ('E:/Dev/Projects/speech-to-text/Release/whisper-cli.exe', 'Release/'), ('E:/Dev/Projects/speech-to-text/Release/ggml-base.dll', 'Release/'), ('E:/Dev/Projects/speech-to-text/Release/ggml-cuda.dll', 'Release/'), ('E:/Dev/Projects/speech-to-text/Release/ggml-cpu.dll', 'Release/'), ('E:/Dev/Projects/speech-to-text/Release/whisper.dll', 'Release/'), ('E:/Dev/Projects/speech-to-text/Release/ggml.dll', 'Release/')],
+    binaries=[('E:/Dev/Projects/speech-to-text/Release/whisper-server.exe', 'Release/')],
     datas=[('E:/Dev/Projects/speech-to-text/Release/models/ggml-large-v3.bin', 'Release/models/')],
     hiddenimports=[],
     hookspath=[],
@@ -21,7 +21,7 @@ exe = EXE(
     a.scripts,
     [],
     exclude_binaries=True,
-    name='app_cpp',
+    name='Bg-Audio-Transcriber',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
@@ -40,5 +40,5 @@ coll = COLLECT(
     strip=False,
     upx=True,
     upx_exclude=[],
-    name='app_cpp',
+    name='Bg-Audio-Transcriber',
 )
