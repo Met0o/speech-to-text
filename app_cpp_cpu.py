@@ -19,19 +19,15 @@ def start_whisper_server():
     else:
         base_path = os.path.dirname(os.path.abspath(__file__))
 
-    # If you use an internal folder for extra resources (like ffmpeg), check for it.
     internal_path = os.path.join(base_path, "_internal")
     if os.path.exists(internal_path):
         base_path = internal_path
 
-    # Append the ffmpeg binary directory to the PATH so that ffmpeg can be found.
     ffmpeg_path = os.path.join(base_path, "ffmpeg", "bin")
     os.environ["PATH"] += os.pathsep + ffmpeg_path
 
-    # Since this is now CPU-only, we hard-code the CPU build paths.
     exe_name = "whisper-server-cpu.exe"
     build_folder = "build_cpu"
-    # No extra arguments needed because we're running in CPU mode.
     extra_args = []
 
     server_exe = os.path.join(base_path, "Release", build_folder, exe_name)
@@ -48,7 +44,6 @@ def start_whisper_server():
     ]
     cmd.extend(extra_args)
 
-    # Use CREATE_NO_WINDOW on Windows to hide the command window
     creation_flags = 0
     if sys.platform.startswith("win"):
         creation_flags = subprocess.CREATE_NO_WINDOW
