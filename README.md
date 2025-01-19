@@ -1,6 +1,6 @@
 # Speech-to-Text Converter
 
-A tool for converting audio files to text using the Whisper AI model.
+A tool for converting audio files to text using OpenAI's Whisper model architecture.
 
 ## Installation
 
@@ -64,45 +64,48 @@ A tool for converting audio files to text using the Whisper AI model.
     ```
 2. Create the executable:
     ```bash
-    pyinstaller app_cpp.py ^
-    --onedir ^
-    --noconsole ^
-    --name "Bg-Audio-Transcriber" ^
-    --add-binary "E:/Dev/Projects/speech-to-text/Release/build_cpu/ggml.dll;Release/build_cpu/" ^
-    --add-binary "E:/Dev/Projects/speech-to-text/Release/build_cpu/whisper.dll;Release/build_cpu/" ^
-    --add-binary "E:/Dev/Projects/speech-to-text/Release/build_cpu/ggml-cpu.dll;Release/build_cpu/" ^
-    --add-binary "E:/Dev/Projects/speech-to-text/Release/build_cpu/ggml-base.dll;Release/build_cpu/" ^
-    --add-binary "E:/Dev/Projects/speech-to-text/Release/build_cpu/whisper-server-cpu.exe;Release/build_cpu/" ^
-    --add-binary "E:/Dev/Projects/speech-to-text/Release/build_cpu/models/ggml-large-v3-turbo-q8_0.bin;Release/build_cpu/models/" ^
-    --add-binary "E:/Dev/Projects/speech-to-text/Release/build_gpu/models/ggml-large-v3-turbo-q8_0.bin;Release/build_gpu/models/" ^
-    --add-binary "E:/Dev/Projects/speech-to-text/Release/build_gpu/whisper-server-gpu.exe;Release/build_gpu/" ^
-    --add-binary "E:/Dev/Projects/speech-to-text/Release/build_gpu/ggml-cuda.dll;Release/build_gpu/" ^
-    --add-binary "E:/Dev/Projects/speech-to-text/Release/build_gpu/ggml-base.dll;Release/build_gpu/" ^
-    --add-binary "E:/Dev/Projects/speech-to-text/Release/build_gpu/ggml-cpu.dll;Release/build_gpu/" ^
-    --add-binary "E:/Dev/Projects/speech-to-text/Release/build_gpu/whisper.dll;Release/build_gpu/" ^
-    --add-binary "E:/Dev/Projects/speech-to-text/Release/build_gpu/ggml.dll;Release/build_gpu/" ^
-    --add-data "E:/Dev/Projects/speech-to-text/ffmpeg;ffmpeg"
+    pyinstaller app_cpp_cpu_gpu.py ^
+        --onedir ^
+        --noconsole ^
+        --name "Bg-Audio-Transcriber" ^
+        --add-binary "E:/Dev/Projects/speech-to-text/Release/build_cpu/ggml.dll;Release/build_cpu/" ^
+        --add-binary "E:/Dev/Projects/speech-to-text/Release/build_cpu/whisper.dll;Release/build_cpu/" ^
+        --add-binary "E:/Dev/Projects/speech-to-text/Release/build_cpu/ggml-cpu.dll;Release/build_cpu/" ^
+        --add-binary "E:/Dev/Projects/speech-to-text/Release/build_cpu/ggml-base.dll;Release/build_cpu/" ^
+        --add-binary "E:/Dev/Projects/speech-to-text/Release/build_cpu/whisper-server-cpu.exe;Release/build_cpu/" ^
+        --add-binary "E:/Dev/Projects/speech-to-text/Release/build_cpu/models/ggml-large-v3-turbo-q8_0.bin;Release/build_cpu/models/" ^
+        --add-binary "E:/Dev/Projects/speech-to-text/Release/build_gpu/models/ggml-large-v3-turbo-q8_0.bin;Release/build_gpu/models/" ^
+        --add-binary "E:/Dev/Projects/speech-to-text/Release/build_gpu/whisper-server-gpu.exe;Release/build_gpu/" ^
+        --add-binary "E:/Dev/Projects/speech-to-text/Release/build_gpu/ggml-cuda.dll;Release/build_gpu/" ^
+        --add-binary "E:/Dev/Projects/speech-to-text/Release/build_gpu/ggml-base.dll;Release/build_gpu/" ^
+        --add-binary "E:/Dev/Projects/speech-to-text/Release/build_gpu/ggml-cpu.dll;Release/build_gpu/" ^
+        --add-binary "E:/Dev/Projects/speech-to-text/Release/build_gpu/whisper.dll;Release/build_gpu/" ^
+        --add-binary "E:/Dev/Projects/speech-to-text/Release/build_gpu/ggml.dll;Release/build_gpu/" ^
+        --add-data "E:/Dev/Projects/speech-to-text/ffmpeg;ffmpeg"
     ```
 
 3. Create CPU dedicated executable:
     ```bash
-    pyinstaller app_cpp.py ^
-    --onedir ^
-    --noconsole ^
-    --name "Bg-Audio-Transcriber" ^
-    --add-binary "E:/Dev/Projects/speech-to-text/Release/build_cpu/ggml.dll;Release/build_cpu/" ^
-    --add-binary "E:/Dev/Projects/speech-to-text/Release/build_cpu/whisper.dll;Release/build_cpu/" ^
-    --add-binary "E:/Dev/Projects/speech-to-text/Release/build_cpu/ggml-cpu.dll;Release/build_cpu/" ^
-    --add-binary "E:/Dev/Projects/speech-to-text/Release/build_cpu/ggml-base.dll;Release/build_cpu/" ^
-    --add-binary "E:/Dev/Projects/speech-to-text/Release/build_cpu/whisper-server-cpu.exe;Release/build_cpu/" ^
-    --add-binary "E:/Dev/Projects/speech-to-text/Release/build_cpu/models/ggml-large-v3-turbo-q8_0.bin;Release/build_cpu/models/"
+    pyinstaller app_cpp_cpu.py ^
+        --onedir ^
+        --noconsole ^
+        --name "Bg-Audio-Transcriber" ^
+        --add-binary "E:/Dev/Projects/speech-to-text/Release/build_cpu/ggml.dll;Release/build_cpu/" ^
+        --add-binary "E:/Dev/Projects/speech-to-text/Release/build_cpu/whisper.dll;Release/build_cpu/" ^
+        --add-binary "E:/Dev/Projects/speech-to-text/Release/build_cpu/ggml-cpu.dll;Release/build_cpu/" ^
+        --add-binary "E:/Dev/Projects/speech-to-text/Release/build_cpu/ggml-base.dll;Release/build_cpu/" ^
+        --add-binary "E:/Dev/Projects/speech-to-text/Release/build_cpu/whisper-server-cpu.exe;Release/build_cpu/" ^
+        --add-binary "E:/Dev/Projects/speech-to-text/Release/build_cpu/models/ggml-large-v3-turbo-q8_0.bin;Release/build_cpu/models/" ^
+        --add-data "E:/Dev/Projects/speech-to-text/ffmpeg;ffmpeg"
     ```
 
 ## Project Structure
 
 ```bash
 speech-to-text/
-  ├── app_cpp.py
+  ├── app_cpp_cpu.py
+  ├── app_cpp_cpu_gpu.py
+  ├── ffmpeg/
   ├── Release/
   │   ├── build_cpu/
   │   │   ├── models/
