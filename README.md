@@ -2,6 +2,8 @@
 
 A tool for converting audio files to text using OpenAI's Whisper model architecture.
 
+![Whisper](utils/GUI.png)
+
 ## Installation
 
 1. Install:
