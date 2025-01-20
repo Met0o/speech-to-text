@@ -7,9 +7,10 @@ A tool for converting audio files to text using OpenAI's Whisper model architect
 ## Installation
 
 1. Install:
-    - [Visual Studio 2022](https://visualstudio.microsoft.com/downloads/) with C++ build tools
+    - [Visual Studio 2022](https://visualstudio.microsoft.com/downloads/) with C++ build tools.
     - [CMake 3.21.3](https://cmake.org/download/)
-    - [NVIDIA CUDA Toolkit 12.6](https://developer.nvidia.com/cuda-12-6-2-download-archive) for your OS
+    - [NVIDIA CUDA Toolkit 12.6](https://developer.nvidia.com/cuda-12-6-2-download-archive) for your OS.
+    - [ffmpeg](https://ffmpeg.org/download.html) for your OS. Place the `ffmpeg` folder in the root directory of the project.
 
 2. Clone the repository:
     ```bash
