@@ -1,5 +1,6 @@
 import os
 import sys
+import time
 import requests
 import threading
 import webbrowser
@@ -8,6 +9,8 @@ import tkinter as tk
 from tkinter import filedialog, messagebox
 
 server_process = None
+timer_running = False
+start_time = None
 
 def start_whisper_server():
     """
@@ -109,41 +112,72 @@ def save_output():
         except Exception as e:
             messagebox.showerror("Error", f"Could not save file:\n{e}")
 
+def update_timer():
+    """
+    Update the elapsed time (HH:MM:SS) in the transcription text widget.
+    """
+    if timer_running:
+        elapsed = time.time() - start_time
+        hrs, rem = divmod(elapsed, 3600)
+        mins, secs = divmod(rem, 60)
+        timer_text = f"Inference Duration: {int(hrs):02d}:{int(mins):02d}:{int(secs):02d}\n"
+        current = transcription_text.get("1.0", tk.END)
+        lines = current.split("\n")
+        if lines and lines[0].startswith("Inference Duration:"):
+            remaining_text = "\n".join(lines[1:])
+        else:
+            remaining_text = current
+        transcription_text.delete("1.0", tk.END)
+        transcription_text.insert(tk.END, timer_text + remaining_text)
+        app.after(1000, update_timer)
+
 def transcription_worker(audio_path):
     """
     Worker function to run in a separate thread.
-    It calls the transcribe_audio() function and then schedules
-    an update of the GUI with the transcription result.
+    Calls the transcription service, then stops the timer and updates the GUI.
     """
+    global timer_running
     try:
         result = transcribe_audio(audio_path)
         text = result.get("text", "No transcription available.")
     except Exception as e:
         text = f"Error: {e}"
-
+    timer_running = False
     app.after(0, update_transcription_text, text)
 
 def update_transcription_text(text):
     """
     Update the transcription text widget with the provided text.
-    This version formats text as a continuous paragraph.
+    The timer line remains as the first line.
     """
+    current = transcription_text.get("1.0", tk.END)
+    lines = current.split("\n")
+    if lines and lines[0].startswith("Inference Duration:"):
+        timer_line = lines[0] + "\n"
+    else:
+        timer_line = ""
     formatted_text = text.replace("\n", " ").strip()
     transcription_text.delete("1.0", tk.END)
-    transcription_text.insert(tk.END, formatted_text)
+    transcription_text.insert(tk.END, timer_line + formatted_text)
 
 def start_transcription():
     """
-    Start the transcription process and display results in a separate thread.
+    Start the transcription process.
+    Initialize and display the timer, then start a background thread.
     """
+    global timer_running, start_time
     audio_path = audio_entry.get()
     if not audio_path:
         messagebox.showerror("Error", "Please select an audio file.")
         return
 
+    start_time = time.time()
+    timer_running = True
     transcription_text.delete("1.0", tk.END)
-    transcription_text.insert(tk.END, "Transcription in progress...")
+    transcription_text.insert(tk.END, "Inference Duration: 00:00:00\nTranscription in progress...")
+    app.after(1000, update_timer)
 
+    # Start transcription on a separate thread.
     thread = threading.Thread(target=transcription_worker, args=(audio_path,))
     thread.daemon = True
     thread.start()
@@ -164,7 +198,6 @@ app.title("Whisper Transcription")
 app.configure(bg="#092642")
 app.geometry("815x600")
 
-# Let row 1 (the transcription text) and column 0 expand
 app.grid_rowconfigure(1, weight=1)
 app.grid_columnconfigure(0, weight=1)
 
@@ -179,23 +212,18 @@ transcription_text_fg = "#000000"
 top_frame = tk.Frame(app, bg=dark_bg)
 top_frame.grid(row=0, column=0, columnspan=5, padx=10, pady=10, sticky="we")
 
-# Input Audio File label
 input_label = tk.Label(top_frame, text="Input Audio File:", fg=dark_fg, bg=dark_bg)
 input_label.pack(side=tk.LEFT, padx=5)
 
-# Audio entry field
 audio_entry = tk.Entry(top_frame, width=40, bg=entry_bg, fg=dark_fg, insertbackground=dark_fg)
 audio_entry.pack(side=tk.LEFT, padx=5, expand=True, fill=tk.X)
 
-# "Browse" button
 browse_btn = tk.Button(top_frame, text="Browse", bg=button_bg, fg=dark_fg, activebackground=button_hover_bg, command=select_audio_file)
 browse_btn.pack(side=tk.LEFT, padx=5)
 
-# "Transcribe" button
 transcribe_btn = tk.Button(top_frame, text="Transcribe", bg=button_bg, fg=dark_fg, activebackground=button_hover_bg, command=start_transcription)
 transcribe_btn.pack(side=tk.LEFT, padx=5)
 
-# "Save Output" button
 save_btn = tk.Button(top_frame, text="Save Output", bg=button_bg, fg=dark_fg, activebackground=button_hover_bg, command=save_output)
 save_btn.pack(side=tk.LEFT, padx=5)
 
