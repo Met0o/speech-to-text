@@ -6,8 +6,11 @@ import webbrowser
 import subprocess
 import tkinter as tk
 from tkinter import filedialog, messagebox
+import time  # For timing
 
 server_process = None
+timer_running = False
+start_time = None
 
 def start_whisper_server(device="cpu"):
     """
@@ -118,39 +121,72 @@ def save_output():
         except Exception as e:
             messagebox.showerror("Error", f"Could not save file:\n{e}")
 
+def update_timer():
+    """
+    Update the elapsed time (HH:MM:SS) in the transcription text widget.
+    This function will schedule itself every 1 second if timer_running is True.
+    """
+    if timer_running:
+        elapsed = time.time() - start_time
+        hrs, rem = divmod(elapsed, 3600)
+        mins, secs = divmod(rem, 60)
+        timer_text = f"Inference Duration: {int(hrs):02d}:{int(mins):02d}:{int(secs):02d}\n"
+        current_text = transcription_text.get("1.0", tk.END).split("\n", 1)
+        if len(current_text) > 1:
+            new_text = timer_text + current_text[1]
+        else:
+            new_text = timer_text
+        transcription_text.delete("1.0", tk.END)
+        transcription_text.insert(tk.END, new_text)
+        app.after(1000, update_timer)
+
 def transcription_worker(audio_path):
     """
     Worker function to run in a separate thread.
     It calls the transcribe_audio() function and then schedules
     an update of the GUI with the transcription result.
     """
+    global timer_running
     try:
         result = transcribe_audio(audio_path)
         text = result.get("text", "No transcription available.")
     except Exception as e:
         text = f"Error: {e}"
 
+    timer_running = False
     app.after(0, update_transcription_text, text)
 
 def update_transcription_text(text):
     """
-    Update the transcription text widget with the provided text.
+    Update the transcription text widget with the provided text,
+    ensuring the timer line remains on the top.
     """
+    current = transcription_text.get("1.0", tk.END)
+    lines = current.split("\n")
+    if lines and lines[0].startswith("Inference Duration:"):
+        timer_line = lines[0] + "\n"
+    else:
+        timer_line = ""
     formatted_text = text.replace("\n", " ").strip()
     transcription_text.delete("1.0", tk.END)
-    transcription_text.insert(tk.END, formatted_text)
+    transcription_text.insert(tk.END, timer_line + formatted_text)
 
 def start_transcription():
     """
-    Start transcription process and display results in a separate thread.
+    Start transcription process, start the timer, and display results in a separate thread.
     """
+    global timer_running, start_time
     audio_path = audio_entry.get()
     if not audio_path:
         messagebox.showerror("Error", "Please select an audio file.")
         return
 
+    start_time = time.time()
+    timer_running = True
     transcription_text.delete("1.0", tk.END)
-    transcription_text.insert(tk.END, "Transcription in progress...")
+    transcription_text.insert(tk.END, "Inference Duration: 00:00:00\nTranscription in progress...")
+
+    app.after(1000, update_timer)
 
     # Start the transcription in a new thread
     thread = threading.Thread(target=transcription_worker, args=(audio_path,))
