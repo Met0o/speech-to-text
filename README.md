@@ -178,6 +178,7 @@ whisper-gpu:
    docker-compose up --build whisper-gpu web-ui
    ```
 
+![Web UI](utils/web_ui.png)
 
 ## Creating Executable
 
