@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Whisper Transcription</title>
+    <style>
+        :root {
+            --bg-primary: #0a1628;
+            --bg-secondary: #1a2744;
+            --accent: #3b82f6;
+            --accent-hover: #2563eb;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --border: #334155;
+            --success: #22c55e;
+            --error: #ef4444;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            min-height: 100vh;
+            color: var(--text-primary);
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(90deg, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .upload-area {
+            background: var(--bg-secondary);
+            border: 2px dashed var(--border);
+            border-radius: 16px;
+            padding: 3rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .upload-area:hover,
+        .upload-area.dragover {
+            border-color: var(--accent);
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .upload-area input[type="file"] {
+            display: none;
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .file-name {
+            color: var(--accent);
+            margin-top: 1rem;
+            font-weight: 500;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        select {
+            flex: 1;
+            min-width: 150px;
+            padding: 0.75rem 1rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        button {
+            flex: 2;
+            padding: 0.75rem 2rem;
+            background: var(--accent);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover:not(:disabled) {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .result-area {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 1.5rem;
+            min-height: 200px;
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .result-header h3 {
+            color: var(--text-secondary);
+        }
+
+        .duration {
+            background: rgba(34, 197, 94, 0.2);
+            color: var(--success);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+        }
+
+        #transcription {
+            line-height: 1.8;
+            white-space: pre-wrap;
+            font-size: 1.1rem;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .error {
+            color: var(--error);
+            background: rgba(239, 68, 68, 0.1);
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        .copy-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            flex: 0;
+        }
+
+        .copy-btn:hover {
+            background: var(--border);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 2rem;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🎙️ Whisper Transcription</h1>
+        <p class="subtitle">GPU-accelerated speech-to-text powered by whisper.cpp</p>
+
+        <div class="upload-area" id="uploadArea" onclick="document.getElementById('audioFile').click()">
+            <div class="upload-icon">📁</div>
+            <p>Drag & drop audio file here or click to browse</p>
+            <p style="color: var(--text-secondary); font-size: 0.875rem; margin-top: 0.5rem">
+                Supports: WAV, MP3, OGG, FLAC, M4A
+            </p>
+            <input type="file" id="audioFile" accept=".wav,.mp3,.ogg,.flac,.m4a,audio/*">
+            <p class="file-name" id="fileName"></p>
+        </div>
+
+        <div class="controls">
+            <select id="backend" title="Processing Backend">
+                <option value="gpu">GPU</option>
+                <option value="cpu">CPU</option>
+            </select>
+            <select id="language">
+                <option value="bg">Bulgarian</option>
+                <option value="en">English</option>
+                <option value="de">German</option>
+                <option value="fr">French</option>
+                <option value="es">Spanish</option>
+                <option value="it">Italian</option>
+                <option value="auto">Auto-detect</option>
+            </select>
+            <button id="transcribeBtn" onclick="transcribe()" disabled>Transcribe</button>
+            <button class="copy-btn" onclick="copyText()">📋 Copy</button>
+        </div>
+
+        <div class="result-area">
+            <div class="result-header">
+                <h3>Transcription Result</h3>
+                <span class="duration" id="duration" style="display: none"></span>
+            </div>
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Transcribing... This may take a moment.</p>
+            </div>
+            <div id="transcription">Upload an audio file and click Transcribe to begin.</div>
+        </div>
+
+        <footer>
+            <p>
+                Based on <a href="https://github.com/openai/whisper" target="_blank">OpenAI Whisper</a> |
+                Powered by <a href="https://github.com/ggerganov/whisper.cpp" target="_blank">whisper.cpp</a> |
+                <a href="https://github.com/Met0o/speech-to-text" target="_blank">GitHub</a>
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        const uploadArea = document.getElementById('uploadArea');
+        const audioFile = document.getElementById('audioFile');
+        const fileName = document.getElementById('fileName');
+        const transcribeBtn = document.getElementById('transcribeBtn');
+        const transcription = document.getElementById('transcription');
+        const loading = document.getElementById('loading');
+        const duration = document.getElementById('duration');
+
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            if (e.dataTransfer.files.length) {
+                audioFile.files = e.dataTransfer.files;
+                updateFileName();
+            }
+        });
+
+        audioFile.addEventListener('change', updateFileName);
+
+        function updateFileName() {
+            if (audioFile.files.length) {
+                fileName.textContent = audioFile.files[0].name;
+                transcribeBtn.disabled = false;
+            }
+        }
+
+        async function transcribe() {
+            if (!audioFile.files.length) return;
+
+            const formData = new FormData();
+            formData.append('file', audioFile.files[0]);
+            formData.append('language', document.getElementById('language').value);
+            formData.append('backend', document.getElementById('backend').value);
+
+            transcription.textContent = '';
+            loading.style.display = 'block';
+            duration.style.display = 'none';
+            transcribeBtn.disabled = true;
+
+            try {
+                const response = await fetch('/transcribe', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.error) {
+                    transcription.innerHTML = `<div class="error">❌ ${result.error}</div>`;
+                } else {
+                    transcription.textContent = result.text || 'No transcription available.';
+                    const backendLabel = result.backend === 'gpu' ? '🚀 GPU' : '💻 CPU';
+                    duration.textContent = `⏱️ ${result.duration} | ${backendLabel}`;
+                    duration.style.display = 'inline';
+                }
+            } catch (error) {
+                transcription.innerHTML = `<div class="error">❌ Connection error: ${error.message}</div>`;
+            } finally {
+                loading.style.display = 'none';
+                transcribeBtn.disabled = false;
+            }
+        }
+
+        function copyText() {
+            const text = transcription.textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Copied to clipboard!');
+            });
+        }
+    </script>
+</body>
+
+</html>

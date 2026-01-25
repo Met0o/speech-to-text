@@ -86,6 +86,99 @@ speech-to-text/
     print(response.text)
     ```
 
+## Docker Support
+
+Run the complete solution (server + web UI) using Docker Compose.
+
+### Prerequisites
+
+| Platform | Requirements |
+|----------|-------------|
+| **Linux** | Docker, Docker Compose, NVIDIA drivers + Container Toolkit (for GPU) |
+| **Windows** | Docker Desktop with WSL2 backend, NVIDIA drivers (for GPU) |
+| **macOS** | Docker Desktop (CPU only, no NVIDIA GPU support) |
+
+### Quick Start
+
+```bash
+# Clone and enter directory
+git clone https://github.com/Met0o/speech-to-text.git
+cd speech-to-text
+
+# Download model (first time only)
+./run_docker.sh gpu  # Downloads model automatically
+
+# Start all services
+docker-compose up --build whisper-gpu web-ui
+```
+
+Open **http://localhost:5000** in your browser.
+
+### Services
+
+| Service | Port | Description |
+|---------|------|-------------|
+| `whisper-gpu` | 8080 | GPU-accelerated transcription server |
+| `whisper-cpu` | 8081 | CPU-only transcription server |
+| `web-ui` | 5000 | Web interface with backend selector |
+
+```bash
+# GPU only
+docker-compose up whisper-gpu web-ui
+
+# CPU only
+docker-compose up whisper-cpu web-ui
+
+# Both backends (switch in UI)
+docker-compose up whisper-gpu whisper-cpu web-ui
+```
+
+### Model Selection
+
+```bash
+# Default (q8_0 - recommended)
+./run_docker.sh gpu
+
+# Smaller/faster model
+./run_docker.sh gpu q5_0
+```
+
+| Model | Size | Quality |
+|-------|------|---------|
+| `q5_0` | ~574 MB | Good |
+| `q8_0` | ~874 MB | Better (default) |
+
+### GPU Build Optimization
+
+Speed up builds by targeting your specific GPU architecture.
+
+Edit `docker-compose.yml`:
+```yaml
+whisper-gpu:
+  build:
+    args:
+      CUDA_ARCH: "86"  # RTX 30-series
+```
+
+| GPU | CUDA_ARCH |
+|-----|-----------|
+| RTX 4090/4080/4070 | `89` |
+| RTX 3090/3080/3070/3060 | `86` |
+| RTX 2080/2070/2060 | `75` |
+| T4 / A10 | `75` |
+| A100 | `80` |
+| V100 | `70` |
+
+### Windows Notes
+
+1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop/) with WSL2 backend
+2. Enable GPU support in Docker Desktop settings (requires NVIDIA GPU + drivers)
+3. Clone repo and run same commands as Linux:
+   ```powershell
+   docker-compose up --build whisper-gpu web-ui
+   ```
+
+
 ## Creating Executable
 
 1. Install PyInstaller:

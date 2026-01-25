@@ -27,9 +27,14 @@ def start_whisper_server():
         base_path = internal_path
 
     ffmpeg_path = os.path.join(base_path, "ffmpeg", "bin")
-    os.environ["PATH"] += os.pathsep + ffmpeg_path
+    if os.path.exists(ffmpeg_path):
+        os.environ["PATH"] += os.pathsep + ffmpeg_path
 
-    exe_name = "whisper-server-cpu.exe"
+    if sys.platform.startswith("win"):
+        exe_name = "whisper-server-cpu.exe"
+    else:
+        exe_name = "whisper-server-cpu"
+        
     build_folder = "build_cpu"
     extra_args = []
 
